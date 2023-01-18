@@ -16,30 +16,30 @@ app.use(cors())
 app.use(bodyParser.json())
 app.use(express.static('public'))
 app.use(express.json())
-app.use(express.urlencoded({extended: true}))
+app.use(express.urlencoded({ extended: true }))
 
 app.get('/', (req, res) => {
-    res.send({
-        art: process.env.SMTP_SERVICE,
-        user: process.env.SMTP_USER,
-    })
+  res.send({
+    art: process.env.SMTP_SERVICE,
+    user: process.env.SMTP_USER,
+  })
 })
 
 app.post('/send-mail', async (req, res) => {
-    try {
-        const data = req.body
+  try {
+    const data = req.body
 
-        res.status(200).send(data)
+    await mailService.sendEmail(data)
 
-        await mailService.sendEmail(data)
-    } catch (error) {
-        console.log('ERROR')
-        console.log(error)
-    }
+    res.send('the message has been sent')
+  } catch (error) {
+    console.log('ERROR')
+    console.log(error)
+  }
 })
 
 app.listen(PORT, () => {
-    console.log(`Example app listening on port ${PORT}`)
+  console.log(`Example app listening on port ${PORT}`)
 })
 
 module.exports = app
